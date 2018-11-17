@@ -1,14 +1,17 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Setting, InputModel } from "src/app/components/form/form.model";
 import { Output, EventEmitter } from "@angular/core";
-import { Subject, Subscription, of } from "rxjs";
+import { Subject, Subscription, of, Observable } from "rxjs";
 import { FormService } from "src/app/components/form/form.service";
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
-  switchMap
+  switchMap,
+  catchError,
+  take,
+  tap
 } from "rxjs/operators";
 import { RequestService } from "src/app/request.service";
 
@@ -26,34 +29,43 @@ export class TypeAheadComponent implements OnInit {
   
     value = new Subject<any>();
     subscription: Subscription;
+    isLoadingData: boolean = false;
   // pisze -> zapisuje eventem dane do komponentu 
   
   
     constructor(private formService: FormService, private requestService: RequestService) { }
   
     ngOnInit() {
-      this.subscription = this.value.subscribe((val: any) => {
-        this.formService.handleTyping(val, this.Id, this.setting, this.formState);
+      this.subscription = this.getDataOnTyping().subscribe(data => {
       });
 
-      this.requestService.makeRequest("getPosts")
-        .pipe(
-          map(value => value.json())
-        )
-        .subscribe(value => {
-          // Dokonczyc requesty
-          console.log(value);
-        });
+    }
+
+    getData(value: any){
+      this.isLoadingData = true;
+      const requestData = this.requestService.makeRequest("getPosts")
+      .pipe(
+        map(value => value.json())
+      )
+      .subscribe(data => {
+        this.isLoadingData = false;
+        return data;
+      });
+
+      return of(requestData);
     }
     
-    getResultsData(){
+    getDataOnTyping(){
       return this.value
         .pipe(
-          debounceTime(250),
-          distinctUntilChanged(),
-          filter(value => value.length > 2),
-          map(value => value.trim()),
-          switchMap(value => value ? value : of([]))
+          tap(value => {
+            this.formService.handleTyping(value, this.Id, this.setting, this.formState);
+          }),
+          filter(value => {
+            return this.formState[this.Id].isAllErrorsResolved;
+          }),
+          debounceTime(600),
+          switchMap((value: any) => this.getData(value))
         );
     }
 

@@ -58,7 +58,7 @@ export const filterSettings: Setting[] = [
     // },
     {
         label: "Type ahead", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {}, mode: "type-ahead", type: "text",
+        validationSettings: {minLength: 2}, mode: "type-ahead", type: "text",
         initialData: [], initialValue: "ddasd"
     },
     {
