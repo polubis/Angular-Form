@@ -2,7 +2,7 @@
 
   <div [class]="setting.inputContainerClass" *ngFor="let setting of settings; let i = index">
     <label *ngIf="setting.label !== ''">
-      {{state.label}}
+      {{setting.label}}
     </label>
 
     <app-normal-input *ngIf="setting.mode === 'normal'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
@@ -16,6 +16,10 @@
     <app-simple-select *ngIf="setting.mode === 'simple-select'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
       
     </app-simple-select>
+
+    <app-type-ahead *ngIf="setting.mode === 'type-ahead'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
+      
+    </app-type-ahead>
 
     <ul [class]="errorClasses" *ngIf="currentFocusedInputIndex === i && formState[i].isAllErrorsResolved === false">
       <li *ngFor="let error of formState[i].errors">

@@ -56,11 +56,11 @@ export const filterSettings: Setting[] = [
     //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
     //     initialData: [], initialValue: ""
     // },
-    // {
-    //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-    //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "filter-search", type: "text",
-    //     initialData: [], initialValue: ""
-    // },
+    {
+        label: "Type ahead", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+        validationSettings: {}, mode: "type-ahead", type: "text",
+        initialData: [], initialValue: "ddasd"
+    },
     {
         label: "", placeholder: "", descriptionName: "Category", inputClass: "input", inputContainerClass: "input-container",
         validationSettings: {required: true}, mode: "select-and-type", type: "text",

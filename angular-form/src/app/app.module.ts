@@ -10,6 +10,8 @@ import { ValidationService } from "src/app/components/form/validation.service";
 import { NormalInputComponent } from './components/normal-input/normal-input.component';
 import { SelectAndTypeComponent } from './components/select-and-type/select-and-type.component';
 import { SimpleSelectComponent } from './components/simple-select/simple-select.component';
+import { TypeAheadComponent } from './components/type-ahead/type-ahead.component';
+import { RequestService } from "src/app/request.service";
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import { SimpleSelectComponent } from './components/simple-select/simple-select.
     FormComponent,
     NormalInputComponent,
     SelectAndTypeComponent,
-    SimpleSelectComponent
+    SimpleSelectComponent,
+    TypeAheadComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,7 @@ import { SimpleSelectComponent } from './components/simple-select/simple-select.
     HttpModule,
     HttpClientModule,
   ],
-  providers: [ValidationService],
+  providers: [ValidationService, RequestService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
