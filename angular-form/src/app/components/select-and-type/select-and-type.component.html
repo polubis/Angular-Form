@@ -1,0 +1,9 @@
+<input spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" list="select-items" (focus)="onChangingFocusedInput.emit()"
+[type]="setting.type" [placeholder]="setting.placeholder" [class]="setting.inputClass"
+[ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}"/>
+
+<datalist id="select-items">
+    <option *ngFor="let item of formState[Id].dataList" [value]="item.value">
+      {{item.displayValue}}
+    </option>
+</datalist>

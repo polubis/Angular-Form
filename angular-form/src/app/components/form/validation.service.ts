@@ -46,10 +46,15 @@ export class ValidationService {
         return isAllErrorsResolved;
     }
 
-    validateAll(formState: InputModel[], settings: Setting[]){
-        return formState.map((state, index) => {
+    validateAll(currentFormState: InputModel[], settings: Setting[]){
+        let isFormReadyToSubmit: boolean = true;
+        const formState: InputModel[] = currentFormState.map((state, index) => {
             const isAllErrorsResolved = this.validateWhileTyping(state.value, state.errors, settings[index].validationSettings);
+            if(!isAllErrorsResolved)
+                isFormReadyToSubmit = false;
             return new InputModel(state.value, isAllErrorsResolved, state.errors, state.dataList);
         });
+
+        return { formState, isFormReadyToSubmit };
     }
 }

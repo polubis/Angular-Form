@@ -4,45 +4,23 @@
     <label *ngIf="setting.label !== ''">
       {{state.label}}
     </label>
-    
 
-    
-    <ng-container *ngIf="setting.mode === 'select-and-type'">
-      <input spellcheck="true" [value]="formState[i].value" (input)="handleTyping($event, i)" list="select-items" (focus)="changeFocusedInput(i)"
-      [type]="setting.type" [placeholder]="setting.placeholder" [class]="setting.inputClass"
-      [ngClass]="{'invalid-input': formState[i].isAllErrorsResolved === false, 'correct-input': formState[i].isAllErrorsResolved === true}"/>
+    <app-normal-input *ngIf="setting.mode === 'normal'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
 
-        <datalist id="select-items">
-            <option *ngFor="let item of formState[i].dataList" [value]="item.value">
-              {{item.displayValue}}
-            </option>
-        </datalist>
-    </ng-container>
+    </app-normal-input>
 
-    <ng-container *ngIf="setting.mode === 'filter-search'">
-      <input spellcheck="true" [value]="formState[i].value" (input)="handleTyping($event, i)" [class]="setting.inputClass"
-      [ngClass]="{'invalid-input': formState[i].isAllErrorsResolved === false, 'correct-input': formState[i].isAllErrorsResolved === true}"
-      (focus)="changeFocusedInput(i)"
-      [type]="setting.type" [placeholder]="setting.placeholder"
-       />    
-    
-    </ng-container>
+    <app-select-and-type *ngIf="setting.mode === 'select-and-type'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
 
-    <ng-container *ngIf="setting.mode === 'custom-select'">
-      <select [class]="setting.inputClass" (input)="handleTyping($event, i)" [ngClass]="{'invalid-input': formState[i].isAllErrorsResolved === false, 'correct-input': formState[i].isAllErrorsResolved === true}">
-        <option *ngFor="let item of formState[i].dataList" [value]="item.value">
-          {{item.displayValue}}
-        </option>
-      </select>
-    </ng-container>
+    </app-select-and-type>
 
-    <ng-content *ngIf="setting.mode === 'content-input'">
-    </ng-content>
+    <app-simple-select *ngIf="setting.mode === 'simple-select'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
+      
+    </app-simple-select>
 
     <ul [class]="errorClasses" *ngIf="currentFocusedInputIndex === i && formState[i].isAllErrorsResolved === false">
       <li *ngFor="let error of formState[i].errors">
         <span>
-          {{error.content}}
+          {{error.content}}        
         </span>
         <i *ngIf="error.isError" class="material-icons">
           close
@@ -53,6 +31,9 @@
       </li>
     </ul>
   </div>
+
+  <ng-content>
+  </ng-content>
 
   <button [disabled]="!isFormReadyToSubmit" [type]="btnType" [class]="submitButtonClass">{{submitButtonTitle}}</button>
 </form>

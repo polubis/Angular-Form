@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { FormService } from "src/app/components/form/form.service";
-import * as formModels from '../form/form.model';
 import { Subscription } from "rxjs";
+import { InputModel, Setting } from "src/app/components/form/form.model";
 
 @Component({
   selector: 'app-form',
@@ -11,16 +11,19 @@ import { Subscription } from "rxjs";
 })
 export class FormComponent implements OnInit, OnDestroy {
   @Input() settingName: string;
-
+  @Input() inputSettings: Setting[];
+  
   @Input() formClass: string = "form";
   @Input() submitButtonClass: string = "submit-btn";
   @Input() btnType: string = "submit";
   @Input() submitButtonTitle: string;
   @Input() errorClasses: string = "error-list";
 
-  formState: formModels.InputModel[];
-  settings: formModels.Setting[];
+  formState: InputModel[];
+  settings: Setting[];
+
   currentFocusedInputIndex: number = -1;
+
   isFormDirty: boolean = false;
   isFormReadyToSubmit: boolean = true;
 
@@ -29,44 +32,35 @@ export class FormComponent implements OnInit, OnDestroy {
   constructor(private formService: FormService) { }
 
   ngOnInit() {
-    this.settings = [...formModels[this.settingName]];
-    this.subscription = this.formService.formState
-    .subscribe((state: formModels.InputModel[]) => {
-      this.formState = state;
-      if(this.isFormDirty){
-        const index: number = this.formState.findIndex(state => !state.isAllErrorsResolved);
-        this.isFormReadyToSubmit = index === -1;
-        if(this.currentFocusedInputIndex === -1)
-          this.currentFocusedInputIndex = index;
-      }
-    });
+    this.settings = [...this.inputSettings];
 
-    this.formService.createFormItems(this.settings);
+    this.subscription = this.formService.formState
+      .subscribe((formState: InputModel[]) => {
+        this.formState = formState;
+
+        if(this.isFormDirty){
+          this.isFormReadyToSubmit = this.formState.findIndex(state => !state.isAllErrorsResolved) === -1;
+        }
+      });
+    this.formService.createFormItems(this.inputSettings);
+
+  }
+  changeFocusedInput(index: number){
+      this.currentFocusedInputIndex = index;
   }
 
   submit(e){
     e.preventDefault();
     this.isFormDirty = true;
-    this.formService.handleValidateAll(this.formState, this.settings);
+    this.isFormReadyToSubmit = this.formService.handleValidateAll(this.formState, this.settings);
     if(this.isFormReadyToSubmit){
-      alert("Wysylam dane") // Tutaj bedzie handlowanie submitowania
+      alert("Form jest ok")
+    }else{
+      this.currentFocusedInputIndex = this.formState.findIndex(state => !state.isAllErrorsResolved);
     }
-  }
-
-  changeFocusedInput(index: number){
-      this.currentFocusedInputIndex = index;
-  }
-
-  handleTyping(e, index: number){
-    console.log(e.target.value);
-    this.formService.handleTyping(e.target.value, index, this.formState, this.settings[index]);
   }
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
-  }
-
-  handleTypAheadTyping(e, index: number){
-    console.log(e.target.value);
   }
 }

@@ -1,0 +1,6 @@
+  <select [class]="setting.inputClass" (input)="handleTyping($event)" (focus)="onChangingFocusedInput.emit()"
+  [ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}">
+    <option *ngFor="let item of formState[Id].dataList" [value]="item.value">
+      {{item.displayValue}}
+    </option>
+  </select>

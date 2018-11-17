@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Setting, filterSettings } from "src/app/components/form/form.model";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angular-form';
+  settings: Setting[] = filterSettings;
+  
 }

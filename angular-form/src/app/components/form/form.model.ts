@@ -1,7 +1,12 @@
-export class InputModel{
-    constructor(public value: any, public isAllErrorsResolved: boolean = true, 
-        public errors: Error[], public dataList: any[]) {
-    }
+import { Subject } from "rxjs";
+
+export class InputModel {
+  constructor(
+    public value: any,
+    public isAllErrorsResolved: boolean = null,
+    public errors: Error[],
+    public dataList: any[]
+  ) {}
 }
 
 export interface Error{
@@ -19,22 +24,56 @@ export interface Setting{
     mode: string, 
     type: string, 
     initialData: any[],
-    initialValue: any
+    initialValue: any,
+    functionRef?: any
 }
 
 export interface Validation {
     minLength?: number,
     maxLength?: number, 
-    required?: number, 
+    required?: boolean, 
     regex?: string 
 }
 
 export const filterSettings: Setting[] = [
-    { label: "", descriptionName: "Categories", initialValue: "Tomaz", inputContainerClass: "", initialData: [{displayValue: "wybierz pole", value: ""}, {displayValue: "inne dane ", value: "inne dane"}], inputClass: "", validationSettings: {}, placeholder: "click here to select category", mode: "select-and-type", type: "text" }, 
-    { label: "", descriptionName: "Searcher", inputClass: "", inputContainerClass: "", validationSettings: {
-        minLength: 3, maxLength: 25, required: true
-    }, placeholder: "start typing and add filters...", mode: "filter-search", type: "text", initialData: [{displayValue: "wybierz pole", value: ""}, {displayValue: "inne dane ", value: "inne dane"}] },
-    { label: "", descriptionName: "Searcher", inputClass: "dadsad", inputContainerClass: "", validationSettings: {
-        minLength: 3, maxLength: 25, required: true
-    }, placeholder: "start typing and add filters...", mode: 'custom-select', type: "text", initialData: [{displayValue: "wybierz pole", value: ""}, {displayValue: "inne dane ", value: "inne dane"}] }
+    {
+        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+        validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
+        initialData: [], initialValue: "ddasd"
+    },
+    {
+        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+        validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
+        initialData: [], initialValue: ""
+    },
+    // {
+    //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+    //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
+    //     initialData: [], initialValue: ""
+    // },
+    // {
+    //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+    //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
+    //     initialData: [], initialValue: ""
+    // },
+    // {
+    //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+    //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "filter-search", type: "text",
+    //     initialData: [], initialValue: ""
+    // },
+    {
+        label: "", placeholder: "", descriptionName: "Category", inputClass: "input", inputContainerClass: "input-container",
+        validationSettings: {required: true}, mode: "select-and-type", type: "text",
+        initialData: [{value: "Id", displayValue: "Id"}], initialValue: "Siema"
+    },
+    {
+        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+        validationSettings: {required: true}, mode: "simple-select", type: "text",
+        initialData: [{value: "", displayValue: "Id"}, {value: "Id", displayValue: "Elo"}], initialValue: ""
+    },
+    // {
+    //     label: "", placeholder: "", descriptionName: "Content test", inputClass: "input", inputContainerClass: "input-container",
+    //     validationSettings: {required: true}, mode: "type-ahead", type: "text",
+    //     initialData: [{value: "", displayValue: "Id"}], initialValue: new Subject()
+    // }
 ];

@@ -1,0 +1,5 @@
+<input spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" [class]="setting.inputClass"
+[ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}"
+(focus)="onChangingFocusedInput.emit()"
+[type]="setting.type" [placeholder]="setting.placeholder"
+ />    
