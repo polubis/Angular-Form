@@ -5,7 +5,8 @@ export class InputModel {
     public value: any,
     public isAllErrorsResolved: boolean = null,
     public errors: Error[],
-    public dataList: any[]
+    public dataList: any[], 
+    public dynamicAddedData: any[] = []
   ) {}
 }
 
@@ -24,15 +25,19 @@ export interface Setting{
     mode: string, 
     type: string, 
     initialData: any[],
-    initialValue: any,
-    functionRef?: any
+    initialValue: any
 }
 
 export interface Validation {
+    // validateOnlyOnSubmitingKeys?: {
+    //     [key: number]: {
+    //         value: number
+    //     }
+    // },
     minLength?: number,
     maxLength?: number, 
     required?: boolean, 
-    regex?: string 
+    regex?: string
 }
 
 export const filterSettings: Setting[] = [
@@ -58,7 +63,7 @@ export const filterSettings: Setting[] = [
     // },
     {
         label: "Type ahead", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {minLength: 2}, mode: "type-ahead", type: "text",
+        validationSettings: {minLength: 2, required: true}, mode: "type-ahead", type: "text",
         initialData: [], initialValue: "ddasd"
     },
     {

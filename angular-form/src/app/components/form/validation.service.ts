@@ -11,12 +11,11 @@ export class ValidationService {
     }
 
     validationMethods = {
-        minLength: (value: any, requirements: number) => this.validateMinLength(value.length, requirements),
-        maxLength: (value: any, requirements: number) => this.validateMaxLength(value.length, requirements), 
+        minLength: (value: any, requirements: number) => this.validateMinLength(value.toString().length, requirements),
+        maxLength: (value: any, requirements: number) => this.validateMaxLength(value.toString().length, requirements), 
         required: (value: any) => this.validateIsExist(value), 
-        regex: (value: any, requirements: number) => this.validateRegexPattern(value, requirements), 
+        regex: (value: any, requirements: number) => this.validateRegexPattern(value, requirements) 
     }
-
     validateMinLength(length: number, minLength: number): boolean{
         return length < minLength;
     }

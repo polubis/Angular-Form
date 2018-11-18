@@ -23,34 +23,43 @@ import { RequestService } from "src/app/request.service";
 export class TypeAheadComponent implements OnInit {
     @Input() setting: Setting;
     @Input() formState: InputModel[];
-  
     @Input() Id: number;
     @Output() onChangingFocusedInput = new EventEmitter<void>();
-  
+    @Output() onPressingEnter = new EventEmitter<any>();
+
     value = new Subject<any>();
     subscription: Subscription;
     isLoadingData: boolean = false;
-  // pisze -> zapisuje eventem dane do komponentu 
-  
   
     constructor(private formService: FormService, private requestService: RequestService) { }
   
     ngOnInit() {
-      this.subscription = this.getDataOnTyping().subscribe(data => {
-      });
-
+      this.subscription = this.getDataOnTyping().subscribe();
     }
 
     getData(value: any){
       this.isLoadingData = true;
       const requestData = this.requestService.makeRequest("getPosts")
       .pipe(
-        map(value => value.json())
+        map(value => {
+          const jsonVal = value.json();
+          const number = Math.ceil(Math.random(0, 10) * 100);
+          const data = [];
+          for(let i = 0; i < number; i++){
+            data.push({value: i.toString() + "wartosc", displayValue: i.toString() + "wartosc"})
+          }
+          return data;
+        }),
       )
-      .subscribe(data => {
-        this.isLoadingData = false;
-        return data;
-      });
+      .subscribe(
+        data => {
+          this.isLoadingData = false;
+          this.formService.putDataIntoInputList(data, this.formState, this.Id);
+        },
+        error => {
+          this.isLoadingData = false;
+        }
+      );
 
       return of(requestData);
     }
@@ -61,12 +70,33 @@ export class TypeAheadComponent implements OnInit {
           tap(value => {
             this.formService.handleTyping(value, this.Id, this.setting, this.formState);
           }),
+          debounceTime(500),
           filter(value => {
-            return this.formState[this.Id].isAllErrorsResolved;
+            return this.formState[this.Id].isAllErrorsResolved && !this.isLoadingData;
           }),
-          debounceTime(600),
-          switchMap((value: any) => this.getData(value))
+          switchMap((value: any) => this.getData(value)),
+          catchError(error => of(error))
         );
+    }
+
+    selectRow(value: any){
+      this.formService.handleTyping(value, this.Id, this.setting, this.formState);
+    }
+
+    addIntoValuesList(){
+      if(!this.isLoadingData){
+        const value: any = this.formState[this.Id].value;
+        this.formService.addItemIntoDynamicList(value, this.formState, this.Id);
+      }
+    }
+
+    handleKeyPress(e){
+      if(e.keyCode === 13){
+        e.preventDefault();
+        this.addIntoValuesList();
+      }else if(e.keyCode === 39 || e.keyCode === 37){
+          console.log("Siema");
+      }
     }
 
     handleTyping(e){

@@ -48,6 +48,37 @@ export class FormService {
         this.formState.next(formState);
     }
 
+    putDataIntoInputList(data: {value: any, displayValue: string}[], currentFormState: InputModel[], index: number){
+        const formState: InputModel[] = [...currentFormState];
+        formState[index].dataList = [...data];
+        this.formState.next(formState);
+    }
+
+    addItemIntoDynamicList(value: any, currentFormState: InputModel[], index: number){
+        const formState: InputModel[] = [...currentFormState];
+        const dataList: {value: any, displayValue: string}[] = [...formState[index].dataList];
+        const dynamicAddedData = [...formState[index].dynamicAddedData];
+
+        const indexOfValueInDataList = dataList.findIndex(data => data.value === value);
+        const isSelectedItemAlreadyInDynamicAddedData = dynamicAddedData.findIndex(data => data.value === value) !== -1;
+        if(indexOfValueInDataList === -1){
+            alert("Brak elementu w data list");
+        }
+        else if(isSelectedItemAlreadyInDynamicAddedData){
+            alert("Ten element jest juz dodany");
+        }
+        else{
+            dynamicAddedData.push(dataList[indexOfValueInDataList]);
+            dataList.splice(indexOfValueInDataList, 1);
+            if(dataList.length > 0)
+                formState[index].value = dataList[0].value;
+            
+            formState[index].dataList = dataList;
+            formState[index].dynamicAddedData = dynamicAddedData;
+            this.formState.next(formState);
+        }
+    }
+
     handleValidateAll(currentFormState: InputModel[], settings: Setting[]){
         const validationResult: { formState: InputModel[], isFormReadyToSubmit: boolean } = this.validationService.validateAll(currentFormState, settings);
         this.formState.next(validationResult.formState);

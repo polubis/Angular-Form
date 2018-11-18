@@ -12,7 +12,7 @@ export class RequestService {
         "getPosts": {url: "https://jsonplaceholder.typicode.com/posts"}
     }
 
-    makeRequest(requestName: string){
-        return this.http.get("https://jsonplaceholder.typicode.com/posts");
+    makeRequest(query: string){
+        return this.http.get("http://localhost:60965/Project/UserSearcher?query=" + query);
     }
 }

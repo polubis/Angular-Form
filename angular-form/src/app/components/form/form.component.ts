@@ -37,7 +37,6 @@ export class FormComponent implements OnInit, OnDestroy {
     this.subscription = this.formService.formState
       .subscribe((formState: InputModel[]) => {
         this.formState = formState;
-        console.log(this.formState);
         if(this.isFormDirty){
           this.isFormReadyToSubmit = this.formState.findIndex(state => !state.isAllErrorsResolved) === -1;
         }
@@ -51,6 +50,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   submit(e){
     e.preventDefault();
+    e.stopPropagation();
     this.isFormDirty = true;
     this.isFormReadyToSubmit = this.formService.handleValidateAll(this.formState, this.settings);
     if(this.isFormReadyToSubmit){
