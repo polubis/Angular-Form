@@ -1,4 +1,4 @@
-<input spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" (focus)="onChangingFocusedInput.emit()" (keypress)="handleKeyPress($event)"
+<input spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" (focus)="onChangingFocusedInput.emit()" (keydown)="handleKeyDown($event)" #inputReference
 [type]="setting.type" [placeholder]="setting.placeholder" [class]="setting.inputClass"
 [ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}"/>
 
@@ -12,7 +12,7 @@
 </button>
 
 <ul *ngIf="formState[Id].isAllErrorsResolved">
-  <li (click)="selectRow(item.value)" *ngFor="let item of formState[Id].dataList">{{item.displayValue}}</li>
+  <li (dblclick)="selectRow(item.value, i, inputReference, true)" (click)="selectRow(item.value, i, inputReference, false)" *ngFor="let item of formState[Id].dataList; let i = index">{{item.displayValue}}</li>
 </ul>
 
 <span *ngIf="isLoadingData">Trwa ładowanie...</span>

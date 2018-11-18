@@ -30,6 +30,7 @@ export class TypeAheadComponent implements OnInit {
     value = new Subject<any>();
     subscription: Subscription;
     isLoadingData: boolean = false;
+    currentFocusedIndexInDataList: number = -1;
   
     constructor(private formService: FormService, private requestService: RequestService) { }
   
@@ -79,23 +80,63 @@ export class TypeAheadComponent implements OnInit {
         );
     }
 
-    selectRow(value: any){
+    selectRow(value: any, index: number, inputRef: HTMLInputElement, shouldAdd: boolean){
+      console.log(inputRef);
       this.formService.handleTyping(value, this.Id, this.setting, this.formState);
-    }
+      this.currentFocusedIndexInDataList = index;
+      inputRef.focus();
 
-    addIntoValuesList(){
-      if(!this.isLoadingData){
-        const value: any = this.formState[this.Id].value;
-        this.formService.addItemIntoDynamicList(value, this.formState, this.Id);
+      if(shouldAdd){
+        this.addIntoValuesList();
       }
     }
 
-    handleKeyPress(e){
-      if(e.keyCode === 13){
-        e.preventDefault();
-        this.addIntoValuesList();
-      }else if(e.keyCode === 39 || e.keyCode === 37){
-          console.log("Siema");
+    addIntoValuesList(){
+        const value: any = this.formState[this.Id].value;
+        this.formService.addItemIntoDynamicList(value, this.formState, this.Id);
+    }
+
+    handlePressingArrows(arrowType: string){
+      const inputState: InputModel = this.formState[this.Id];
+      const numberOfItems: number = inputState.dataList.length;
+      if(numberOfItems > 0 && inputState.isAllErrorsResolved && !this.isLoadingData){
+        this[arrowType](numberOfItems-1, inputState.dataList);
+      }
+    }
+
+    selectNext(numberOfItems: number, dataList: {value: any, displayValue: string}[]){
+        if(this.currentFocusedIndexInDataList === numberOfItems){
+          this.currentFocusedIndexInDataList = 0;
+          this.formService.handleTyping(dataList[this.currentFocusedIndexInDataList].value, this.Id, this.setting, this.formState);  
+        }else{
+          this.currentFocusedIndexInDataList = this.currentFocusedIndexInDataList + 1;
+          this.formService.handleTyping(dataList[this.currentFocusedIndexInDataList].value, this.Id, this.setting, this.formState);  
+        }
+    } 
+
+    selectBefore(numberOfItems: number, dataList: {value: any, displayValue: string}[]){
+      if(this.currentFocusedIndexInDataList <= 0){
+        this.currentFocusedIndexInDataList = numberOfItems;
+        this.formService.handleTyping(dataList[this.currentFocusedIndexInDataList].value, this.Id, this.setting, this.formState);  
+      }else{
+        this.currentFocusedIndexInDataList = this.currentFocusedIndexInDataList - 1;
+        this.formService.handleTyping(dataList[this.currentFocusedIndexInDataList].value, this.Id, this.setting, this.formState);  
+      }
+    }
+
+    handleKeyDown(e){
+      if(!this.isLoadingData && this.formState[this.Id].isAllErrorsResolved){
+        if(e.keyCode === 13){
+          e.preventDefault();
+          this.addIntoValuesList();
+        }else if(e.keyCode === 38){
+          e.preventDefault();
+          this.handlePressingArrows("selectBefore");
+        }
+        else if(e.keyCode === 40){
+          e.preventDefault();
+          this.handlePressingArrows("selectNext");
+        }
       }
     }
 
