@@ -12,6 +12,7 @@ import { SelectAndTypeComponent } from './components/select-and-type/select-and-
 import { SimpleSelectComponent } from './components/simple-select/simple-select.component';
 import { TypeAheadComponent } from './components/type-ahead/type-ahead.component';
 import { RequestService } from "src/app/request.service";
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { RequestService } from "src/app/request.service";
     NormalInputComponent,
     SelectAndTypeComponent,
     SimpleSelectComponent,
-    TypeAheadComponent
+    TypeAheadComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

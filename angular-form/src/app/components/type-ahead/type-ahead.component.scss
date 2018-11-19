@@ -1,0 +1,43 @@
+.add-item-btn{
+    position: relative;
+}
+.box-container{
+    display: flex;
+    align-items: center;
+}
+
+.project-team-data-container{
+    background: white;
+    box-shadow: 0 6px 10px rgba(0,0,0,.14);
+    position: absolute;
+    z-index: 2;
+    .project-team-data-list{
+        max-height: 300px;
+        padding: 5px 0;
+        overflow-y: auto;
+        li{
+            padding: 10px;
+            cursor: pointer;
+        }
+    }
+    span{
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        padding: 10px;
+        font-size: 13px;
+        width: 100%;
+        cursor: pointer;
+        border-top: 1px solid #E9E9E9;
+        text-align: right;
+        color: #1565C0;
+        box-sizing: border-box;
+        i{
+            margin-right: 5px;
+            font-size: 13px;
+        }
+    }
+}
+.focused-element{
+    background: #E9E9E9;
+}

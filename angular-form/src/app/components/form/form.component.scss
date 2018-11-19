@@ -1,18 +1,70 @@
-button:disabled{
-    background: red;
+.project-form{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 750px;
+    height: 80vh;
 }
-.invalid-input{
-    border: 1px solid red;
-}
-.correct-input{
-    border: 1px solid green;
-}
-select{
-    padding: 12.5px;
-}
-form{
+.normal-input-container{
+    position: relative;
     display: flex;
-    flex-flow: column;
-    height: 500px;
-    justify-content: space-between;
+    margin: 50px 0;
+    align-items: center;
+    label, .material-input{
+        padding: 10px 0;
+        font-size: 16px;
+        font-family: 'Roboto';
+    }
+    label{
+        position: absolute;
+        pointer-events: none;
+        left: 0;
+        top: 0;
+        transition: .5s;
+    }
+    .material-input{
+        border: none;
+        width: 100%;
+        border-bottom: 1px solid #1565C0;
+        outline: none;
+        &:focus ~ label, &:valid ~ label{
+            top: -20px;
+            left: 0;
+            font-size: 12px;
+            color: #1565C0;
+        }
+    }
+}
+.errors-icon{
+    margin-left: 7.5px;
+}
+.errors-container{
+    .normal-errors{
+        position: absolute;
+        left: 0;    
+        z-index: 2;
+        background: white;
+        width: 205px;
+        top: 40px;
+        box-shadow: 0 6px 10px rgba(0,0,0,.14);
+        li{
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            padding: 12.5px;
+            justify-content: space-between;
+            span{
+                max-width: 90%;
+            }
+        }
+    }
+    
+}
+
+.submit-btn{
+    position: absolute;
+    bottom: 0;
+    width: 125px;
+    right: 0;
 }

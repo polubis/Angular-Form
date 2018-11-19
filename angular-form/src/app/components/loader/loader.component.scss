@@ -1,0 +1,33 @@
+.loader{
+    border-right-color: transparent;
+    animation: .5s animate-spinner ease-in infinite;
+    border: 2px solid #1565C0;
+    border-top-color: transparent;
+    z-index: 1;
+    border-radius: 50%;
+    @keyframes animate-spinner {
+        0%{
+            transform: rotate(0);
+        }
+        100%{
+            transform: rotate(360deg);
+        }
+    }
+}
+.loader-centered{
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+}
+.loader-fixed{
+    position: fixed;
+}
+.loader-absolute{
+    position: absolute;
+}
+.input-loader{
+    top: -10px;
+    right: -15px;
+}

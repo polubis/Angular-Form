@@ -1,19 +1,24 @@
-<input spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" (focus)="onChangingFocusedInput.emit()" (keydown)="handleKeyDown($event)" #inputReference
-[type]="setting.type" [placeholder]="setting.placeholder" [class]="setting.inputClass"
-[ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}"/>
-
-
-<div *ngFor="let data of formState[Id].dynamicAddedData">
-  {{data.displayValue}}
+<div class="box-container">
+  <input required="" [style.width]="setting.inputWidth + 'px'" spellcheck="true" [value]="formState[Id].value" (input)="handleTyping($event)" 
+  (focus)="onChangingFocusedInput.emit(Id)" (keydown)="handleKeyDown($event)" #inputReference 
+  [type]="setting.type" [placeholder]="setting.placeholder" [class]="setting.inputClass"
+  [ngClass]="{'invalid-input': formState[Id].isAllErrorsResolved === false, 'correct-input': formState[Id].isAllErrorsResolved === true}"/>
+  <label *ngIf="setting.label !== ''">
+    {{setting.label}}
+  </label>
+  <button *ngIf="formState[Id].isAllErrorsResolved === true || formState[Id].isAllErrorsResolved === null" (click)="addIntoValuesList()" type="button" [disabled]="isLoadingData" class="add-item-btn">
+    <i *ngIf="!isLoadingData" class="material-icons">add_circle</i>
+    <app-loader *ngIf="isLoadingData" [width]="'14px'" [height]="'14px'" [positionClass]="'loader-absolute input-loader'">
+    </app-loader>
+  </button>
 </div>
 
-<button (click)="addIntoValuesList()" type="button" [disabled]="isLoadingData">
-  Add into table
-</button>
-
-<ul *ngIf="formState[Id].isAllErrorsResolved">
-  <li (dblclick)="selectRow(item.value, i, inputReference, true)" (click)="selectRow(item.value, i, inputReference, false)" *ngFor="let item of formState[Id].dataList; let i = index">{{item.displayValue}}</li>
-</ul>
-
-<span *ngIf="isLoadingData">Trwa ładowanie...</span>
-
+<div class="project-team-data-container" *ngIf="formState[Id].isAllErrorsResolved && formState[Id].dataList.length > 0 && currentFocusedInputIndex === Id">
+  <ul class="project-team-data-list" [style.width]="setting.inputWidth + 'px'">
+    <li [ngClass]="{'focused-element': currentFocusedIndexInDataList === i}" (dblclick)="selectRow(item.value, i, inputReference, true)" 
+    (click)="selectRow(item.value, i, inputReference, false)" *ngFor="let item of formState[Id].dataList; let i = index">{{item.displayValue}}</li>
+  </ul>
+  <span (click)="closeDataListWithoutClearingValue()">
+    <i class="material-icons">close</i> Close 
+  </span>
+</div>

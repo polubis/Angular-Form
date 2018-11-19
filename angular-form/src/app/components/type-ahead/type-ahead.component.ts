@@ -24,11 +24,13 @@ export class TypeAheadComponent implements OnInit {
     @Input() setting: Setting;
     @Input() formState: InputModel[];
     @Input() Id: number;
-    @Output() onChangingFocusedInput = new EventEmitter<void>();
+    @Input() currentFocusedInputIndex: number;
+    @Output() onChangingFocusedInput = new EventEmitter<number>();
     @Output() onPressingEnter = new EventEmitter<any>();
-
+    
     value = new Subject<any>();
     subscription: Subscription;
+  
     isLoadingData: boolean = false;
     currentFocusedIndexInDataList: number = -1;
   
@@ -38,8 +40,14 @@ export class TypeAheadComponent implements OnInit {
       this.subscription = this.getDataOnTyping().subscribe();
     }
 
+    closeDataListWithoutClearingValue(){
+      this.formService.resetInputState(this.Id, this.formState, this.setting, this.formState[this.Id].value);
+    }
+
     getData(value: any){
       this.isLoadingData = true;
+      this.formService.isDoingSomeBackendOperations.next(true);
+
       const requestData = this.requestService.makeRequest("getPosts")
       .pipe(
         map(value => {
@@ -54,15 +62,23 @@ export class TypeAheadComponent implements OnInit {
       )
       .subscribe(
         data => {
-          this.isLoadingData = false;
           this.formService.putDataIntoInputList(data, this.formState, this.Id);
+
+          const dataList: {value: any, displayValue: string}[] = this.formState[this.Id].dataList;
+          const value: any = this.formState[this.Id].value;
+          
+          this.currentFocusedIndexInDataList = dataList.findIndex(item => item.value === value);
+
+          this.isLoadingData = false;
+          this.formService.isDoingSomeBackendOperations.next(false);
         },
         error => {
           this.isLoadingData = false;
+          this.formService.isDoingSomeBackendOperations.next(false);
         }
       );
 
-      return of(requestData);
+      return of(requestData);//
     }
     
     getDataOnTyping(){
@@ -81,7 +97,6 @@ export class TypeAheadComponent implements OnInit {
     }
 
     selectRow(value: any, index: number, inputRef: HTMLInputElement, shouldAdd: boolean){
-      console.log(inputRef);
       this.formService.handleTyping(value, this.Id, this.setting, this.formState);
       this.currentFocusedIndexInDataList = index;
       inputRef.focus();
@@ -92,6 +107,7 @@ export class TypeAheadComponent implements OnInit {
     }
 
     addIntoValuesList(){
+        const length: number = this.formState[this.Id].dataList.length;
         const value: any = this.formState[this.Id].value;
         this.formService.addItemIntoDynamicList(value, this.formState, this.Id);
     }
@@ -136,6 +152,9 @@ export class TypeAheadComponent implements OnInit {
         else if(e.keyCode === 40){
           e.preventDefault();
           this.handlePressingArrows("selectNext");
+        }
+        else if(e.keyCode === 9){
+          this.closeDataListWithoutClearingValue();
         }
       }
     }

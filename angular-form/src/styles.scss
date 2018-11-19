@@ -1,4 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
-body{
+body, html{
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
     color: black;
+    font-family: 'Roboto', sans-serif;
+}
+
+button{
+    &:focus{
+        outline: none;
+    }
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: black;
+    border-radius: 5px;
 }

@@ -25,15 +25,12 @@ export interface Setting{
     mode: string, 
     type: string, 
     initialData: any[],
-    initialValue: any
+    initialValue: any,
+    errorClass: string,
+    inputWidth: number
 }
 
 export interface Validation {
-    // validateOnlyOnSubmitingKeys?: {
-    //     [key: number]: {
-    //         value: number
-    //     }
-    // },
     minLength?: number,
     maxLength?: number, 
     required?: boolean, 
@@ -41,20 +38,10 @@ export interface Validation {
 }
 
 export const filterSettings: Setting[] = [
-    {
-        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
-        initialData: [], initialValue: "ddasd"
-    },
-    {
-        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
-        initialData: [], initialValue: ""
-    },
     // {
     //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
     //     validationSettings: {minLength: 3, maxLength: 25, required: true}, mode: "normal", type: "text",
-    //     initialData: [], initialValue: ""
+    //     initialData: [], initialValue: "ddasd"
     // },
     // {
     //     label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
@@ -62,23 +49,25 @@ export const filterSettings: Setting[] = [
     //     initialData: [], initialValue: ""
     // },
     {
-        label: "Type ahead", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+        label: "Project Team", placeholder: "", descriptionName: "Searcher", inputClass: "material-input", inputContainerClass: "normal-input-container",
         validationSettings: {minLength: 2, required: true}, mode: "type-ahead", type: "text",
-        initialData: [], initialValue: "ddasd"
+        initialData: [], initialValue: "", errorClass: "normal-errors", inputWidth: 220
     },
     {
-        label: "", placeholder: "", descriptionName: "Category", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {required: true}, mode: "select-and-type", type: "text",
-        initialData: [{value: "Id", displayValue: "Id"}], initialValue: "Siema"
+        label: "Project Team", placeholder: "", descriptionName: "Searcher", inputClass: "material-input", inputContainerClass: "normal-input-container",
+        validationSettings: {minLength: 2, required: true}, mode: "type-ahead", type: "text",
+        initialData: [], initialValue: "", errorClass: "normal-errors", inputWidth: 220
     },
-    {
-        label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
-        validationSettings: {required: true}, mode: "simple-select", type: "text",
-        initialData: [{value: "", displayValue: "Id"}, {value: "Id", displayValue: "Elo"}], initialValue: ""
-    },
-    // {
-    //     label: "", placeholder: "", descriptionName: "Content test", inputClass: "input", inputContainerClass: "input-container",
-    //     validationSettings: {required: true}, mode: "type-ahead", type: "text",
-    //     initialData: [{value: "", displayValue: "Id"}], initialValue: new Subject()
-    // }
+//     {
+//         label: "", placeholder: "", descriptionName: "Category", inputClass: "input", inputContainerClass: "input-container",
+//         validationSettings: {required: true}, mode: "select-and-type", type: "text",
+//         initialData: [{value: "Id", displayValue: "Id"}], initialValue: "Siema"
+//     },
+//     {
+//         label: "", placeholder: "", descriptionName: "Searcher", inputClass: "input", inputContainerClass: "input-container",
+//         validationSettings: {required: true}, mode: "simple-select", type: "text",
+//         initialData: [{value: "", displayValue: "Id"}, {value: "Id", displayValue: "Elo"}], initialValue: ""
+//     },
+
+// ];
 ];

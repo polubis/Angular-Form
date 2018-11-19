@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  OnDestroy,
+  ViewEncapsulation
+} from "@angular/core";
 import { FormService } from "src/app/components/form/form.service";
 import { Subscription } from "rxjs";
 import { InputModel, Setting } from "src/app/components/form/form.model";
@@ -7,7 +15,8 @@ import { InputModel, Setting } from "src/app/components/form/form.model";
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
-  providers: [FormService]
+  providers: [FormService],
+  encapsulation: ViewEncapsulation.None
 })
 export class FormComponent implements OnInit, OnDestroy {
   @Input() settingName: string;
@@ -17,7 +26,6 @@ export class FormComponent implements OnInit, OnDestroy {
   @Input() submitButtonClass: string = "submit-btn";
   @Input() btnType: string = "submit";
   @Input() submitButtonTitle: string;
-  @Input() errorClasses: string = "error-list";
 
   formState: InputModel[];
   settings: Setting[];
@@ -28,6 +36,10 @@ export class FormComponent implements OnInit, OnDestroy {
   isFormReadyToSubmit: boolean = true;
 
   subscription: Subscription;
+  stateSubscription: Subscription;
+
+  isDoingSomeServerOperations: boolean = false;
+
 
   constructor(private formService: FormService) { }
 
@@ -37,14 +49,20 @@ export class FormComponent implements OnInit, OnDestroy {
     this.subscription = this.formService.formState
       .subscribe((formState: InputModel[]) => {
         this.formState = formState;
+        console.log(this.formState);
         if(this.isFormDirty){
           this.isFormReadyToSubmit = this.formState.findIndex(state => !state.isAllErrorsResolved) === -1;
         }
       });
+    this.formService.isDoingSomeBackendOperations
+      .subscribe(state => {
+        this.isDoingSomeServerOperations = state;
+      })
     this.formService.createFormItems(this.inputSettings);
 
   }
   changeFocusedInput(index: number){
+      console.log(index);
       this.currentFocusedInputIndex = index;
   }
 
@@ -62,5 +80,10 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
+    this.stateSubscription.unsubscribe();
+  }
+
+  calculateErrorListLength(baseWidth: number, additionalWidth: number = 24){
+    return (baseWidth + additionalWidth).toString() + "px";
   }
 }

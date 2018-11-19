@@ -1,6 +1,6 @@
 
 import { Injectable } from "@angular/core";
-import { Subject, of } from "rxjs";
+import { of, BehaviorSubject, Subject } from "rxjs";
 import { Setting, InputModel, Error } from './form.model';
 import { Http } from '@angular/http';
 import {
@@ -16,6 +16,7 @@ import { ValidationService } from "src/app/components/form/validation.service";
 @Injectable()
 export class FormService {
     formState = new Subject<InputModel[]>();
+    isDoingSomeBackendOperations = new BehaviorSubject<boolean>(false);
 
     constructor(private validationService: ValidationService, private http: Http){}
     createFormItems = (settings: Setting[]) => {
@@ -35,6 +36,13 @@ export class FormService {
                 (setting.descriptionName, setting.validationSettings[key])
             };
         });
+    }//
+
+    resetInputState(index: number, currentFormState: InputModel[], setting: Setting, value: any){
+        const formState: InputModel[] = [...currentFormState];
+        formState[index].dataList = [];
+        formState[index].value = value;
+        this.formState.next(formState);
     }
 
     handleTyping(value: any, index: number, setting: Setting, currentFormState: InputModel[]){
@@ -61,13 +69,7 @@ export class FormService {
 
         const indexOfValueInDataList = dataList.findIndex(data => data.value === value);
         const isSelectedItemAlreadyInDynamicAddedData = dynamicAddedData.findIndex(data => data.value === value) !== -1;
-        if(indexOfValueInDataList === -1){
-            alert("Brak elementu w data list");
-        }
-        else if(isSelectedItemAlreadyInDynamicAddedData){
-            alert("Ten element jest juz dodany");
-        }
-        else{
+        if(indexOfValueInDataList !== -1 && !isSelectedItemAlreadyInDynamicAddedData){
             dynamicAddedData.push(dataList[indexOfValueInDataList]);
             dataList.splice(indexOfValueInDataList, 1);
             if(dataList.length > 0)
@@ -77,6 +79,22 @@ export class FormService {
             formState[index].dynamicAddedData = dynamicAddedData;
             this.formState.next(formState);
         }
+        // if(indexOfValueInDataList === -1){
+        //     alert("Brak elementu w data list");
+        // }
+        // else if(isSelectedItemAlreadyInDynamicAddedData){
+        //     alert("Ten element jest juz dodany");
+        // }
+        // else{
+        //     dynamicAddedData.push(dataList[indexOfValueInDataList]);
+        //     dataList.splice(indexOfValueInDataList, 1);
+        //     if(dataList.length > 0)
+        //         formState[index].value = dataList[0].value;
+            
+        //     formState[index].dataList = dataList;
+        //     formState[index].dynamicAddedData = dynamicAddedData;
+        //     this.formState.next(formState);
+        // }
     }
 
     handleValidateAll(currentFormState: InputModel[], settings: Setting[]){

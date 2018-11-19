@@ -1,43 +1,47 @@
 <form [class]="formClass" (submit)="submit($event)">
-
-  <div [class]="setting.inputContainerClass" *ngFor="let setting of settings; let i = index">
-    <label *ngIf="setting.label !== ''">
-      {{setting.label}}
-    </label>
-
-    <app-normal-input *ngIf="setting.mode === 'normal'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
+  <div [class]="setting.inputContainerClass" *ngFor="let setting of settings; let i = index" [style.width]="setting.width">
+ 
+    <app-normal-input *ngIf="setting.mode === 'normal'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput($event)">
 
     </app-normal-input>
 
-    <app-select-and-type *ngIf="setting.mode === 'select-and-type'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
+    <app-select-and-type *ngIf="setting.mode === 'select-and-type'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput($event)">
 
     </app-select-and-type>
 
-    <app-simple-select *ngIf="setting.mode === 'simple-select'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
+    <app-simple-select *ngIf="setting.mode === 'simple-select'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput($event)">
       
     </app-simple-select>
 
-    <app-type-ahead *ngIf="setting.mode === 'type-ahead'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput(i)">
-      
+    <app-type-ahead [currentFocusedInputIndex]="currentFocusedInputIndex"
+    *ngIf="setting.mode === 'type-ahead'" [setting]="setting" [formState]="formState" [Id]="i" (onChangingFocusedInput)="changeFocusedInput($event)">
+
     </app-type-ahead>
 
-    <ul [class]="errorClasses" *ngIf="currentFocusedInputIndex === i && formState[i].isAllErrorsResolved === false">
-      <li *ngFor="let error of formState[i].errors">
-        <span>
-          {{error.content}}        
-        </span>
-        <i *ngIf="error.isError" class="material-icons">
-          close
-        </i>
-        <i *ngIf="!error.isError" class="material-icons">
-          check
-        </i>
-      </li>
-    </ul>
+    <div class="errors-container" *ngIf="currentFocusedInputIndex === i && formState[i].isAllErrorsResolved === false">
+      <i class="material-icons errors-icon">error_outline</i>
+      <ul [class]="setting.errorClass" [style.width]="calculateErrorListLength(setting.inputWidth)">
+        <li *ngFor="let error of formState[i].errors">
+          <span>
+            {{error.content}}        
+          </span>
+          <i *ngIf="error.isError" class="material-icons">
+            error_outline
+          </i>
+          <i *ngIf="!error.isError" class="material-icons">
+            check
+          </i>
+        </li>
+      </ul>
+    </div>
+    <div *ngFor="let data of formState[i].dynamicAddedData">
+      {{data.displayValue}}
+    </div>
   </div>
 
   <ng-content>
   </ng-content>
 
-  <button [disabled]="!isFormReadyToSubmit" [type]="btnType" [class]="submitButtonClass">{{submitButtonTitle}}</button>
+  <button [disabled]="!isFormReadyToSubmit || isDoingSomeServerOperations" [type]="btnType" [class]="submitButtonClass">{{submitButtonTitle}}</button>
 </form>
+
